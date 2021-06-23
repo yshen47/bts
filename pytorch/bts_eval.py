@@ -48,9 +48,9 @@ parser.add_argument('--encoder', type=str, help='type of encoder, desenet121_bts
 parser.add_argument('--data_path', type=str, help='path to the data', required=True)
 parser.add_argument('--gt_path', type=str, help='path to the groundtruth data', required=False)
 parser.add_argument('--filenames_file', type=str, help='path to the filenames text file', required=True)
-parser.add_argument('--input_height', type=int, help='input height', default=480)
-parser.add_argument('--input_width', type=int, help='input width', default=640)
-parser.add_argument('--max_depth', type=float, help='maximum depth in estimation', default=80)
+parser.add_argument('--input_height', type=int, help='input height', default=256)
+parser.add_argument('--input_width', type=int, help='input width', default=512)
+parser.add_argument('--max_depth', type=float, help='maximum depth in estimation', default=100)
 parser.add_argument('--output_directory', type=str,
                     help='output directory for summary, if empty outputs to checkpoint folder', default='')
 parser.add_argument('--checkpoint_path', type=str, help='path to a specific checkpoint to load', default='')

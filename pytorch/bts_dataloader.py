@@ -24,7 +24,7 @@ import os
 import random
 
 from distributed_sampler_no_evenly_divisible import *
-
+import matplotlib.pyplot as plt
 
 def _is_pil_image(img):
     return isinstance(img, Image.Image)
@@ -85,7 +85,7 @@ class DataLoadPreprocess(Dataset):
         else:
             with open(args.filenames_file, 'r') as f:
                 self.filenames = f.readlines()
-    
+        self.filenames = self.filenames[16363:]
         self.mode = mode
         self.transform = transform
         self.to_tensor = ToTensor
@@ -102,11 +102,13 @@ class DataLoadPreprocess(Dataset):
             else:
                 image_path = os.path.join(self.args.data_path, "./" + sample_path.split()[0])
                 depth_path = os.path.join(self.args.gt_path, "./" + sample_path.split()[1])
-    
-            image = Image.open(image_path)
+
+            with open(image_path, 'rb') as f:
+                with Image.open(f) as img:
+                    image = img.convert('RGB')
             depth_gt = Image.open(depth_path)
             
-            if self.args.do_kb_crop is True:
+            if self.args.do_kb_crop:
                 height = image.height
                 width = image.width
                 top_margin = int(height - 352)
@@ -118,7 +120,7 @@ class DataLoadPreprocess(Dataset):
             if self.args.dataset == 'nyu':
                 depth_gt = depth_gt.crop((43, 45, 608, 472))
                 image = image.crop((43, 45, 608, 472))
-    
+
             if self.args.do_random_rotate is True:
                 random_angle = (random.random() - 0.5) * 2 * self.args.degree
                 image = self.rotate_image(image, random_angle)
@@ -126,10 +128,14 @@ class DataLoadPreprocess(Dataset):
             
             image = np.asarray(image, dtype=np.float32) / 255.0
             depth_gt = np.asarray(depth_gt, dtype=np.float32)
+            depth_gt = (depth_gt[:, :, 2] + depth_gt[:, :, 1] * 256. + depth_gt[:, :, 0] * 256. * 256) / ( 256*256*256. - 1 ) * 1000 # units: 1 m
+
             depth_gt = np.expand_dims(depth_gt, axis=2)
 
             if self.args.dataset == 'nyu':
                 depth_gt = depth_gt / 1000.0
+            elif self.args.dataset == 'carla':
+                depth_gt = depth_gt
             else:
                 depth_gt = depth_gt / 256.0
 
@@ -142,9 +148,15 @@ class DataLoadPreprocess(Dataset):
                 data_path = self.args.data_path_eval
             else:
                 data_path = self.args.data_path
+            try:
+                image_path = os.path.join(data_path, "./" + sample_path.split()[0])
+                with open(image_path, 'rb') as f:
+                    with Image.open(f) as img:
+                        image = img.convert('RGB')
+            except Exception as e:
+                print(image_path, e)
 
-            image_path = os.path.join(data_path, "./" + sample_path.split()[0])
-            image = np.asarray(Image.open(image_path), dtype=np.float32) / 255.0
+            image = np.asarray(image, dtype=np.float32) / 255.0
 
             if self.mode == 'online_eval':
                 gt_path = self.args.gt_path_eval
@@ -159,9 +171,14 @@ class DataLoadPreprocess(Dataset):
 
                 if has_valid_depth:
                     depth_gt = np.asarray(depth_gt, dtype=np.float32)
+                    depth_gt = (depth_gt[:, :, 2] + depth_gt[:, :, 1] * 256. + depth_gt[:, :, 0] * 256. * 256) / (
+                                256 * 256 * 256. - 1) * 1000
+
                     depth_gt = np.expand_dims(depth_gt, axis=2)
                     if self.args.dataset == 'nyu':
                         depth_gt = depth_gt / 1000.0
+                    elif self.args.dataset == 'carla':
+                        depth_gt = depth_gt
                     else:
                         depth_gt = depth_gt / 256.0
 

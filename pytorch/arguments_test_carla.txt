@@ -1,0 +1,9 @@
+--encoder densenet161_bts
+--data_path /media/yuan/T7_red/hca-attention/bdda_training_dataset/inference/manual_camera_images_4hz
+--dataset carla
+--filenames_file ../train_test_inputs/inference_files.txt
+--model_name bts_carla_pytorch_train
+--checkpoint_path ./models/bts_carla_pytorch_train/model
+--input_height 256
+--input_width 512
+--max_depth 1000
