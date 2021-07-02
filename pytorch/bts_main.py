@@ -16,26 +16,15 @@
 
 import time
 import argparse
-import datetime
 import sys
-import os
-
-import torch
-import torch.nn as nn
-import torch.nn.utils as utils
-
-import torch.backends.cudnn as cudnn
-import torch.distributed as dist
 import torch.multiprocessing as mp
 
 from tensorboardX import SummaryWriter
 
 import matplotlib
 import matplotlib.cm
-import threading
 from tqdm import tqdm
 
-from bts import BtsModel
 from bts_dataloader import *
 
 
@@ -449,7 +438,7 @@ def main_worker(gpu, ngpus_per_node, args):
             if args.dataset == 'nyu':
                 mask = depth_gt > 0.1
             else:
-                mask = depth_gt > 1.0
+                mask = depth_gt < args.max_depth
 
             loss = silog_criterion.forward(depth_est, depth_gt, mask.to(torch.bool))
             loss.backward()
