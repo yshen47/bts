@@ -141,7 +141,7 @@ class DataLoadPreprocess(Dataset):
 
             image, depth_gt = self.random_crop(image, depth_gt, self.args.input_height, self.args.input_width)
             image, depth_gt = self.train_preprocess(image, depth_gt)
-            sample = {'image': image, 'depth': depth_gt, 'focal': focal}
+            sample = {'image': image, 'depth': depth_gt+1e-7, 'focal': focal}
         
         else:
             if self.mode == 'online_eval':
@@ -192,7 +192,7 @@ class DataLoadPreprocess(Dataset):
                     depth_gt = depth_gt[top_margin:top_margin + 352, left_margin:left_margin + 1216, :]
             
             if self.mode == 'online_eval':
-                sample = {'image': image, 'depth': depth_gt, 'focal': focal, 'has_valid_depth': has_valid_depth}
+                sample = {'image': image, 'depth': depth_gt+1e-7, 'focal': focal, 'has_valid_depth': has_valid_depth}
             else:
                 sample = {'image': image, 'focal': focal}
         

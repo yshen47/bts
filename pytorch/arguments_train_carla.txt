@@ -1,5 +1,5 @@
 --mode train
---model_name bts_carla_pytorch_train2
+--model_name bts_carla_pytorch_train3
 --encoder densenet161_bts
 --dataset carla
 --data_path /media/yuan/T7_red/carla_dataset/

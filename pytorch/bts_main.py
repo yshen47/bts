@@ -373,12 +373,12 @@ def main_worker(gpu, ngpus_per_node, args):
             global_step = checkpoint['global_step']
             model.load_state_dict(checkpoint['model'])
             optimizer.load_state_dict(checkpoint['optimizer'])
-            try:
-                best_eval_measures_higher_better = checkpoint['best_eval_measures_higher_better'].cpu()
-                best_eval_measures_lower_better = checkpoint['best_eval_measures_lower_better'].cpu()
-                best_eval_steps = checkpoint['best_eval_steps']
-            except KeyError:
-                print("Could not load values for online evaluation")
+            # try:
+            #     best_eval_measures_higher_better = checkpoint['best_eval_measures_higher_better'].cpu()
+            #     best_eval_measures_lower_better = checkpoint['best_eval_measures_lower_better'].cpu()
+            #     best_eval_steps = checkpoint['best_eval_steps']
+            # except KeyError:
+            #     print("Could not load values for online evaluation")
 
             print("Loaded checkpoint '{}' (global_step {})".format(args.checkpoint_path, checkpoint['global_step']))
         else:
