@@ -85,7 +85,7 @@ class DataLoadPreprocess(Dataset):
         else:
             with open(args.filenames_file, 'r') as f:
                 self.filenames = f.readlines()
-        self.filenames = self.filenames[16363:]
+        self.filenames = self.filenames
         self.mode = mode
         self.transform = transform
         self.to_tensor = ToTensor

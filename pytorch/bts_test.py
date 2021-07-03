@@ -76,7 +76,7 @@ for key, val in vars(__import__(args.model_name)).items():
 
 def get_num_lines(file_path):
     f = open(file_path, 'r')
-    lines = f.readlines()[16363:]
+    lines = f.readlines()
     f.close()
     return len(lines)
 
@@ -100,7 +100,7 @@ def test(params):
     num_test_samples = get_num_lines(args.filenames_file)
 
     with open(args.filenames_file) as f:
-        lines = f.readlines()[16363:]
+        lines = f.readlines()
 
     print('now testing {} files with {}'.format(num_test_samples, args.checkpoint_path))
 
