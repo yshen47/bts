@@ -94,7 +94,7 @@ class DataLoadPreprocess(Dataset):
     def __getitem__(self, idx):
         sample_path = self.filenames[idx]
         focal = float(sample_path.split()[2])
-
+        focal /= 3.5 # due to resize image to (256, 512)
         if self.mode == 'train':
             if self.args.dataset == 'kitti' and self.args.use_right is True and random.random() > 0.5:
                 image_path = os.path.join(self.args.data_path, "./" + sample_path.split()[3])
@@ -105,9 +105,9 @@ class DataLoadPreprocess(Dataset):
 
             with open(image_path, 'rb') as f:
                 with Image.open(f) as img:
-                    image = img.convert('RGB')
-            depth_gt = Image.open(depth_path)
-            
+                    image = img.convert('RGB').resize((512, 256))
+            depth_gt = Image.open(depth_path).resize((512, 256))
+
             if self.args.do_kb_crop:
                 height = image.height
                 width = image.width
@@ -135,7 +135,7 @@ class DataLoadPreprocess(Dataset):
             if self.args.dataset == 'nyu':
                 depth_gt = depth_gt / 1000.0
             elif self.args.dataset == 'carla':
-                depth_gt = depth_gt
+                depth_gt = depth_gt / 100.0
             else:
                 depth_gt = depth_gt / 256.0
 
@@ -152,7 +152,7 @@ class DataLoadPreprocess(Dataset):
                 image_path = os.path.join(data_path, "./" + sample_path.split()[0])
                 with open(image_path, 'rb') as f:
                     with Image.open(f) as img:
-                        image = img.convert('RGB')
+                        image = img.convert('RGB').resize((512, 256))
             except Exception as e:
                 print(image_path, e)
 
@@ -163,7 +163,7 @@ class DataLoadPreprocess(Dataset):
                 depth_path = os.path.join(gt_path, "./" + sample_path.split()[1])
                 has_valid_depth = False
                 try:
-                    depth_gt = Image.open(depth_path)
+                    depth_gt = Image.open(depth_path).resize((512, 256))
                     has_valid_depth = True
                 except IOError:
                     depth_gt = False
@@ -178,7 +178,7 @@ class DataLoadPreprocess(Dataset):
                     if self.args.dataset == 'nyu':
                         depth_gt = depth_gt / 1000.0
                     elif self.args.dataset == 'carla':
-                        depth_gt = depth_gt
+                        depth_gt = depth_gt / 100.0
                     else:
                         depth_gt = depth_gt / 256.0
 

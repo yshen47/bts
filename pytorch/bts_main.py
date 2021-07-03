@@ -196,7 +196,7 @@ def normalize_result(value, vmin=None, vmax=None):
     vmax = value.max() if vmax is None else vmax
 
     if vmin != vmax:
-        value = (value - vmin) / (vmax - vmin)
+        value = (value - vmin) / (vmax - vmin + 1e-7)
     else:
         value = value * 0.
 
@@ -438,7 +438,7 @@ def main_worker(gpu, ngpus_per_node, args):
             if args.dataset == 'nyu':
                 mask = depth_gt > 0.1
             else:
-                mask = depth_gt < args.max_depth
+                mask = depth_gt > 1e-3
 
             loss = silog_criterion.forward(depth_est, depth_gt, mask.to(torch.bool))
             loss.backward()

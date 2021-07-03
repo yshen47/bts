@@ -6,26 +6,24 @@
 --gt_path /media/yuan/T7_red/carla_dataset/
 --filenames_file ../train_test_inputs/carla_train_files_with_gt.txt
 --batch_size 40
---num_epochs 50
+--num_epochs 1000
 --learning_rate 1e-4
 --weight_decay 1e-2
 --adam_eps 1e-3
 --num_threads 1
 --input_height 256
---retrain
 --input_width 512
---max_depth 500
+--max_depth 10
 --do_random_rotate
 --degree 2.5
 --log_directory ./models/
---checkpoint_path ./models/bts_carla_pytorch_train/model-21000-best_d1_0.81473
 --log_freq 100
 --do_online_eval
 --eval_freq 500
 --data_path_eval /media/yuan/T7_red/carla_dataset/
 --gt_path_eval /media/yuan/T7_red/carla_dataset/
 --filenames_file_eval ../train_test_inputs/carla_test_files_with_gt.txt
---min_depth_eval 0
---max_depth_eval 500
+--min_depth_eval 1e-3
+--max_depth_eval 10
 --eval_summary_directory ./models/eval/
 --eigen_crop
